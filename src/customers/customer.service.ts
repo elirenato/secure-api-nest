@@ -10,19 +10,29 @@ export class CustomerService {
     private customerRepository: Repository<Customer>,
   ) {}
 
-  findAll(): Promise<Customer[]> {
-    return this.customerRepository.find();
-  }
-
-  findOne(id: number): Promise<Customer> {
-    return this.customerRepository.findOneBy({ id });
-  }
-
   async persistCustomer(customerInput: Customer): Promise<void> {
+    customerInput.id = null;
     await this.customerRepository.insert(customerInput);
   }
 
-  async remove(id: string): Promise<void> {
+  async updateCustomer(id: number, customerInput: Customer): Promise<void> {
+    await this.customerRepository.update({ id }, customerInput);
+  }
+
+  async deleteCustomerById(id: number): Promise<void> {
     await this.customerRepository.delete(id);
+  }
+
+  listAllCustomers(): Promise<Customer[]> {
+    return this.customerRepository.find({
+      order: {
+        lastName: 'asc',
+        firstName: 'asc',
+      },
+    });
+  }
+
+  getCustomerById(id: number): Promise<Customer> {
+    return this.customerRepository.findOneBy({ id });
   }
 }

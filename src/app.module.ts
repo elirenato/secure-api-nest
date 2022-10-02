@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CommonModule } from './common/common-module';
+import { CommonsModule } from './commons/commons.module';
 import { CustomerModule } from './customers/customer.module';
 
 @Module({
@@ -21,7 +21,7 @@ import { CustomerModule } from './customers/customer.module';
       autoLoadEntities: true,
     }),
     CustomerModule,
-    CommonModule,
+    CommonsModule,
   ],
   controllers: [],
   providers: [],
