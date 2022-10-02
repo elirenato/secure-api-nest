@@ -4,7 +4,8 @@ import {
   createCustomer,
   createMockRepository,
   createNestApplication,
-} from '../factory';
+  createToken,
+} from '../commons/factory';
 import { CustomerController } from '../../src/customers/customer.controller';
 import { Customer } from '../../src/customers/customer.entity';
 import { CustomerService } from '../../src/customers/customer.service';
@@ -33,7 +34,22 @@ describe('CustomerController', () => {
     app = await createNestApplication(fixture);
   });
   describe('persistCustomer', () => {
-    it('should call persistCustomer', () => {
+    it('should persist customer with success', () => {
+      jest
+        .spyOn(customerService, 'persistCustomer')
+        .mockReturnValue(Promise.resolve());
+      const customerInput = createCustomer();
+      return request(app.getHttpServer())
+        .post('/api/customers')
+        .set('Authorization', 'Bearer ' + createToken(['managers']))
+        .send(customerInput)
+        .expect(201)
+        .then(() => {
+          expect(customerService.persistCustomer).toBeCalledTimes(1);
+          expect(customerService.persistCustomer).toBeCalledWith(customerInput);
+        });
+    });
+    it('should get 401 when persist customer without authentication', () => {
       jest
         .spyOn(customerService, 'persistCustomer')
         .mockReturnValue(Promise.resolve());
@@ -41,11 +57,18 @@ describe('CustomerController', () => {
       return request(app.getHttpServer())
         .post('/api/customers')
         .send(customerInput)
-        .expect(201)
-        .then(() => {
-          expect(customerService.persistCustomer).toBeCalledTimes(1);
-          expect(customerService.persistCustomer).toBeCalledWith(customerInput);
-        });
+        .expect(401);
+    });
+    it('should get 403 when persist customer without authorization', () => {
+      jest
+        .spyOn(customerService, 'persistCustomer')
+        .mockReturnValue(Promise.resolve());
+      const customerInput = createCustomer();
+      return request(app.getHttpServer())
+        .post('/api/customers')
+        .set('Authorization', 'Bearer ' + createToken(['operators']))
+        .send(customerInput)
+        .expect(403);
     });
   });
   afterAll(async () => {
