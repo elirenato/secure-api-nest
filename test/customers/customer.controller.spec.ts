@@ -1,22 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import {
-  createCustomer,
-  createMockRepository,
-  createNestApplication,
-  createToken,
-} from '../commons/factory';
+import { EntityFactory } from '../commons/entity-factory';
+import { TestHelper } from '../commons/test-helper';
 import { CustomerController } from '../../src/customers/customer.controller';
 import { Customer } from '../../src/customers/customer.entity';
 import { CustomerService } from '../../src/customers/customer.service';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { QueryFailedError } from 'typeorm';
+import { EntityNotFoundError, QueryFailedError, UpdateResult } from 'typeorm';
 import { CommonsModule } from '../../src/commons/commons.module';
 
 describe('CustomerController', () => {
   const customerService = {
     persistCustomer: jest.fn(),
+    updateCustomer: jest.fn(),
   };
   let app: INestApplication;
   beforeEach(async () => {
@@ -30,21 +27,21 @@ describe('CustomerController', () => {
         },
         {
           provide: getRepositoryToken(Customer),
-          useValue: createMockRepository(),
+          useValue: TestHelper.createMockRepository(),
         },
       ],
     }).compile();
-    app = await createNestApplication(fixture);
+    app = await TestHelper.createNestApplication(fixture);
   });
   describe('persistCustomer', () => {
     it('should persist customer with success', () => {
       jest
         .spyOn(customerService, 'persistCustomer')
         .mockReturnValue(Promise.resolve());
-      const customerInput = createCustomer();
+      const customerInput = EntityFactory.createCustomer();
       return request(app.getHttpServer())
         .post('/api/customers')
-        .set('Authorization', 'Bearer ' + createToken(['managers']))
+        .set('Authorization', 'Bearer ' + TestHelper.createToken(['managers']))
         .send(customerInput)
         .expect(201)
         .then(() => {
@@ -58,16 +55,16 @@ describe('CustomerController', () => {
           constraint: 'customers_email_key',
         });
       });
-      const customerInput = createCustomer();
+      const customerInput = EntityFactory.createCustomer();
       const response = await request(app.getHttpServer())
         .post('/api/customers')
-        .set('Authorization', 'Bearer ' + createToken(['managers']))
+        .set('Authorization', 'Bearer ' + TestHelper.createToken(['managers']))
         .send(customerInput)
         .expect(400);
       expect(response.body).toEqual({
         errors: [
           {
-            message: 'There is already a customer with this email.',
+            message: 'There is already a customer with this email',
           },
         ],
       });
@@ -78,17 +75,52 @@ describe('CustomerController', () => {
           constraint: 'customers_email_key',
         });
       });
-      const customerInput = createCustomer();
+      const customerInput = EntityFactory.createCustomer();
       const response = await request(app.getHttpServer())
         .post('/api/customers')
-        .set('Authorization', 'Bearer ' + createToken(['managers']))
+        .set('Authorization', 'Bearer ' + TestHelper.createToken(['managers']))
         .set('Accept-language', 'pt-BR')
         .send(customerInput)
         .expect(400);
       expect(response.body).toEqual({
         errors: [
           {
-            message: 'Já existe um cliente com este email.',
+            message: 'Já existe um cliente com este email',
+          },
+        ],
+      });
+    });
+    it('should return error when input is invalid', async () => {
+      jest.spyOn(customerService, 'persistCustomer').mockImplementation(() => {
+        throw new QueryFailedError('', [], {
+          constraint: 'customers_email_key',
+        });
+      });
+      const customerInput = new Customer();
+      const response = await request(app.getHttpServer())
+        .post('/api/customers')
+        .set('Authorization', 'Bearer ' + TestHelper.createToken(['managers']))
+        .send(customerInput)
+        .expect(400);
+      expect(response.body).toEqual({
+        errors: [
+          {
+            message: 'First name should not be empty',
+          },
+          {
+            message: 'Last name should not be empty',
+          },
+          {
+            message: 'Email must be an email',
+          },
+          {
+            message: 'Address should not be empty',
+          },
+          {
+            message: 'Postal code should not be empty',
+          },
+          {
+            message: 'State or Province should not be empty',
           },
         ],
       });
@@ -97,7 +129,7 @@ describe('CustomerController', () => {
       jest
         .spyOn(customerService, 'persistCustomer')
         .mockReturnValue(Promise.resolve());
-      const customerInput = createCustomer();
+      const customerInput = EntityFactory.createCustomer();
       return request(app.getHttpServer())
         .post('/api/customers')
         .send(customerInput)
@@ -107,15 +139,83 @@ describe('CustomerController', () => {
       jest
         .spyOn(customerService, 'persistCustomer')
         .mockReturnValue(Promise.resolve());
-      const customerInput = createCustomer();
+      const customerInput = EntityFactory.createCustomer();
       return request(app.getHttpServer())
         .post('/api/customers')
-        .set('Authorization', 'Bearer ' + createToken(['operators']))
+        .set('Authorization', 'Bearer ' + TestHelper.createToken(['operators']))
         .send(customerInput)
         .expect(403);
     });
-  });
-  afterAll(async () => {
-    await app.close();
+    describe('updateCustomer', () => {
+      it('should update customer with success', () => {
+        jest
+          .spyOn(customerService, 'updateCustomer')
+          .mockReturnValue(Promise.resolve());
+        const customerInput = EntityFactory.createCustomer();
+        return request(app.getHttpServer())
+          .put('/api/customers/' + customerInput.id)
+          .set(
+            'Authorization',
+            'Bearer ' + TestHelper.createToken(['managers']),
+          )
+          .send(customerInput)
+          .expect(200)
+          .then(() => {
+            expect(customerService.updateCustomer).toBeCalledTimes(1);
+            expect(customerService.updateCustomer).toBeCalledWith(
+              customerInput.id,
+              customerInput,
+            );
+          });
+      });
+      it('should get 401 when update customer without authentication', () => {
+        jest
+          .spyOn(customerService, 'updateCustomer')
+          .mockReturnValue(Promise.resolve());
+        const customerInput = EntityFactory.createCustomer();
+        return request(app.getHttpServer())
+          .put('/api/customers/' + customerInput.id)
+          .send(customerInput)
+          .expect(401);
+      });
+      it('should get 403 when update customer without authorization', () => {
+        jest
+          .spyOn(customerService, 'updateCustomer')
+          .mockReturnValue(Promise.resolve());
+        const customerInput = EntityFactory.createCustomer();
+        return request(app.getHttpServer())
+          .put('/api/customers/' + customerInput.id)
+          .set(
+            'Authorization',
+            'Bearer ' + TestHelper.createToken(['operators']),
+          )
+          .send(customerInput)
+          .expect(403);
+      });
+      it('should get 404 when update customer that does not exists', async () => {
+        const customerInput = EntityFactory.createCustomer();
+        jest.spyOn(customerService, 'updateCustomer').mockImplementation(() => {
+          throw new EntityNotFoundError(Customer, { id: customerInput.id });
+        });
+        const response = await request(app.getHttpServer())
+          .put('/api/customers/' + customerInput.id)
+          .set(
+            'Authorization',
+            'Bearer ' + TestHelper.createToken(['managers']),
+          )
+          .send(customerInput)
+          .expect(404);
+        expect(response.body).toEqual({
+          errors: [
+            {
+              message: `Could not find any \"Customer\" matching id ${customerInput.id}`,
+            },
+          ],
+        });
+      });
+    });
+    afterEach(async () => {
+      await app.close();
+    });
   });
 });

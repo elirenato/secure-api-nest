@@ -4,28 +4,19 @@ import { Response } from 'express';
 import { getI18nContextFromArgumentsHost } from 'nestjs-i18n';
 
 export abstract class BaseExceptionFilter {
-  buildErrorResponse(status: number, exceptionBody: any, host: ArgumentsHost) {
+  buildErrorResponse(status: number, messages: string[], host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const errors: ErrorMessage[] = [];
-    if (exceptionBody && Array.isArray(exceptionBody.message)) {
-      exceptionBody.message.forEach((item) => {
-        errors.push({
-          message: item,
-        });
-      });
-    } else if (exceptionBody && typeof exceptionBody.message === 'string') {
+    messages.forEach((message) => {
       errors.push({
-        message: exceptionBody.message,
+        message: message,
       });
-    } else if (typeof exceptionBody === 'string') {
-      errors.push({
-        message: exceptionBody,
-      });
-    } else {
+    });
+    if (errors.length <= 0) {
       const i18n = getI18nContextFromArgumentsHost(host);
       errors.push({
-        message: i18n.translate('messages.errors.unexpected'),
+        message: i18n.translate('key.errors.unexpected'),
       });
     }
     response.status(status).json({

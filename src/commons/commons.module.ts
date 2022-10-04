@@ -1,16 +1,14 @@
-import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
-import { BadRequestExceptionFilter } from './exceptions/bad-request-exception.filter';
 import {
-  AuthGuard,
-  KeycloakConnectModule,
-  PolicyEnforcementMode,
-  RoleGuard,
-} from 'nest-keycloak-connect';
-import { APP_GUARD } from '@nestjs/core';
-import { QueryFailedExceptionFilter } from './exceptions/query-failed-exception.filter';
+  ClassSerializerInterceptor,
+  Module,
+  ValidationPipe,
+} from '@nestjs/common';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { BadRequestExceptionFilter } from './exceptions/bad-request-exception.filter';
+import { QueryFailedErrorFilter } from './exceptions/query-failed-error.filter';
 import * as path from 'path';
 import { AcceptLanguageResolver, I18nModule } from 'nestjs-i18n';
+import { EntityNotFoundErrorFilter } from './exceptions/entity-not-found-exception.filter';
 
 @Module({
   imports: [
@@ -30,7 +28,19 @@ import { AcceptLanguageResolver, I18nModule } from 'nestjs-i18n';
     },
     {
       provide: APP_FILTER,
-      useClass: QueryFailedExceptionFilter,
+      useClass: QueryFailedErrorFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: EntityNotFoundErrorFilter,
+    },
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
     },
   ],
   controllers: [],

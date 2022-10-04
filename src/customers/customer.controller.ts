@@ -27,7 +27,10 @@ export class CustomerController {
     @Param() params,
     @Body() customerInput: Customer,
   ): Promise<void> {
-    return this.customerService.updateCustomer(params.id, customerInput);
+    return this.customerService.updateCustomer(
+      Number(params.id),
+      customerInput,
+    );
   }
 
   @Delete(':id')

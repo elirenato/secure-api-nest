@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonsModule } from './commons/commons.module';
 import { SecurityModule } from './commons/security.module';
 import { CustomerModule } from './customers/customer.module';
+import { CountryModule } from './countries/country.module';
+import { StateProvinceModule } from './state-provinces/state-province.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { CustomerModule } from './customers/customer.module';
       autoLoadEntities: true,
     }),
     SecurityModule,
+    CountryModule,
+    StateProvinceModule,
     CustomerModule,
     CommonsModule,
   ],

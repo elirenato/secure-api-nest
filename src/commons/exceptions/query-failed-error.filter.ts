@@ -4,19 +4,26 @@ import { BaseExceptionFilter } from './base-exception.filter';
 import { getI18nContextFromArgumentsHost } from 'nestjs-i18n';
 
 @Catch(QueryFailedError)
-export class QueryFailedExceptionFilter
+export class QueryFailedErrorFilter
   extends BaseExceptionFilter
   implements ExceptionFilter
 {
   catch(exception: QueryFailedError, host: ArgumentsHost) {
     const i18n = getI18nContextFromArgumentsHost(host);
-    const key = 'messages.constraints.' + exception.driverError.constraint;
-    const message = i18n.translate(key);
-    if (key === message) {
-      console.error(exception);
-      this.buildErrorResponse(500, null, host);
+    let message: string;
+    if (exception.driverError && exception.driverError.constraint) {
+      const key = 'key.constraints.' + exception.driverError.constraint;
+      message = i18n.translate(key, {
+        defaultValue: null,
+      });
     } else {
-      this.buildErrorResponse(400, message, host);
+      message = null;
+    }
+    if (message) {
+      this.buildErrorResponse(400, [message], host);
+    } else {
+      console.error(exception);
+      this.buildErrorResponse(500, [], host);
     }
   }
 }

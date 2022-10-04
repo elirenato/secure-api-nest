@@ -1,5 +1,13 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { IsEmail, IsNotEmpty } from 'class-validator';
+import { StateProvince } from '../state-provinces/state-province.entity';
 
 @Entity('customers')
 export class Customer {
@@ -29,4 +37,9 @@ export class Customer {
   @IsNotEmpty()
   @Column({ length: 30 })
   postalCode: string;
+
+  @IsNotEmpty()
+  @ManyToOne(() => StateProvince, null, { nullable: false })
+  @JoinColumn({ name: 'state_province_id' })
+  stateProvince: StateProvince;
 }

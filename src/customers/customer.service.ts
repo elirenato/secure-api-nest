@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import { Customer } from './customer.entity';
 
 @Injectable()
@@ -16,11 +16,17 @@ export class CustomerService {
   }
 
   async updateCustomer(id: number, customerInput: Customer): Promise<void> {
-    await this.customerRepository.update({ id }, customerInput);
+    const result = await this.customerRepository.update({ id }, customerInput);
+    if (result.affected <= 0) {
+      throw new EntityNotFoundError(Customer, { id });
+    }
   }
 
   async deleteCustomerById(id: number): Promise<void> {
-    await this.customerRepository.delete(id);
+    const result = await this.customerRepository.delete(id);
+    if (result.affected <= 0) {
+      throw new EntityNotFoundError(Customer, { id });
+    }
   }
 
   listAllCustomers(): Promise<Customer[]> {
