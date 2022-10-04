@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonsModule } from './commons/commons.module';
+import { SecurityModule } from './commons/security.module';
 import { CustomerModule } from './customers/customer.module';
 
 @Module({
@@ -20,6 +21,7 @@ import { CustomerModule } from './customers/customer.module';
       synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE),
       autoLoadEntities: true,
     }),
+    SecurityModule,
     CustomerModule,
     CommonsModule,
   ],

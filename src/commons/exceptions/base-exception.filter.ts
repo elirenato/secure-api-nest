@@ -1,6 +1,7 @@
-import { ArgumentsHost } from "@nestjs/common";
-import { ErrorMessage } from "./error-response.model";
-import { Request, Response } from 'express';
+import { ArgumentsHost } from '@nestjs/common';
+import { ErrorMessage } from './error-response.model';
+import { Response } from 'express';
+import { getI18nContextFromArgumentsHost } from 'nestjs-i18n';
 
 export abstract class BaseExceptionFilter {
   buildErrorResponse(status: number, exceptionBody: any, host: ArgumentsHost) {
@@ -17,9 +18,14 @@ export abstract class BaseExceptionFilter {
       errors.push({
         message: exceptionBody.message,
       });
-    } else {
+    } else if (typeof exceptionBody === 'string') {
       errors.push({
-        message: 'Unexpected error.',
+        message: exceptionBody,
+      });
+    } else {
+      const i18n = getI18nContextFromArgumentsHost(host);
+      errors.push({
+        message: i18n.translate('messages.errors.unexpected'),
       });
     }
     response.status(status).json({

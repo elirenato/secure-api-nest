@@ -11,6 +11,8 @@ import { Customer } from '../../src/customers/customer.entity';
 import { CustomerService } from '../../src/customers/customer.service';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
+import { QueryFailedError } from 'typeorm';
+import { CommonsModule } from '../../src/commons/commons.module';
 
 describe('CustomerController', () => {
   const customerService = {
@@ -19,6 +21,7 @@ describe('CustomerController', () => {
   let app: INestApplication;
   beforeEach(async () => {
     const fixture: TestingModule = await Test.createTestingModule({
+      imports: [CommonsModule],
       controllers: [CustomerController],
       providers: [
         {
@@ -48,6 +51,47 @@ describe('CustomerController', () => {
           expect(customerService.persistCustomer).toBeCalledTimes(1);
           expect(customerService.persistCustomer).toBeCalledWith(customerInput);
         });
+    });
+    it('should return error when email already exists', async () => {
+      jest.spyOn(customerService, 'persistCustomer').mockImplementation(() => {
+        throw new QueryFailedError('', [], {
+          constraint: 'customers_email_key',
+        });
+      });
+      const customerInput = createCustomer();
+      const response = await request(app.getHttpServer())
+        .post('/api/customers')
+        .set('Authorization', 'Bearer ' + createToken(['managers']))
+        .send(customerInput)
+        .expect(400);
+      expect(response.body).toEqual({
+        errors: [
+          {
+            message: 'There is already a customer with this email.',
+          },
+        ],
+      });
+    });
+    it('should return error when email already exists portuguese', async () => {
+      jest.spyOn(customerService, 'persistCustomer').mockImplementation(() => {
+        throw new QueryFailedError('', [], {
+          constraint: 'customers_email_key',
+        });
+      });
+      const customerInput = createCustomer();
+      const response = await request(app.getHttpServer())
+        .post('/api/customers')
+        .set('Authorization', 'Bearer ' + createToken(['managers']))
+        .set('Accept-language', 'pt-BR')
+        .send(customerInput)
+        .expect(400);
+      expect(response.body).toEqual({
+        errors: [
+          {
+            message: 'Já existe um cliente com este email.',
+          },
+        ],
+      });
     });
     it('should get 401 when persist customer without authentication', () => {
       jest

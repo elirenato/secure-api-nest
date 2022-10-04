@@ -1,9 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 import { IsEmail, IsNotEmpty } from 'class-validator';
-import { Exclude } from 'class-transformer';
-import { SerializeOptions } from '@nestjs/common';
 
-@Entity()
+@Entity('customers')
 export class Customer {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,7 +15,8 @@ export class Customer {
   lastName: string;
 
   @IsEmail()
-  @Column({ unique: true, length: 255 })
+  @Column({ length: 255 })
+  @Index('customers_email_key', { unique: true })
   email: string;
 
   @IsNotEmpty()

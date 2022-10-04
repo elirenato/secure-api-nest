@@ -10,6 +10,7 @@ Dependencies installed so far:
 - `npm i --save keycloak-connect` to use Keycloak.
 - `npm i --save nest-keycloak-connect` to use Keycloak.
 - `npm i --save-dev @faker-js/faker` to generate test data.
+- `npm i --save nestjs-i18n` to add support for localization.
 
 ## Run the application in dev mode
 

@@ -10,6 +10,7 @@ import { Customer } from '../../src/customers/customer.entity';
 import * as jwt from 'jsonwebtoken';
 import { BadRequestExceptionFilter } from '../../src/commons/exceptions/bad-request-exception.filter';
 import { FakeAuthGuard } from './fake-auth.guard';
+import { QueryFailedExceptionFilter } from '../../src/commons/exceptions/query-failed-exception.filter';
 
 export function createToken(roles: string[]): string {
   const now = new Date();
@@ -35,10 +36,12 @@ export async function createNestApplication(
 ): Promise<INestApplication> {
   const app = fixture.createNestApplication();
   const reflector = app.get(Reflector);
-  app.useLogger(console);
   app.useGlobalGuards(new FakeAuthGuard(reflector));
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalFilters(new BadRequestExceptionFilter());
+  app.useGlobalFilters(
+    new BadRequestExceptionFilter(),
+    new QueryFailedExceptionFilter(),
+  );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
   return await app.init();
 }

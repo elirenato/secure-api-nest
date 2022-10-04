@@ -1,0 +1,8 @@
+{
+  "errors": {
+    "unexpected": "Ocorreu um erro inesperado. Por favor, contate o suporte."
+  },
+  "constraints": {
+    "customers_email_key": "Já existe um cliente com este email."
+  }
+}

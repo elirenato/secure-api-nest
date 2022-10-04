@@ -8,11 +8,19 @@ import {
   RoleGuard,
 } from 'nest-keycloak-connect';
 import { APP_GUARD } from '@nestjs/core';
+import { QueryFailedExceptionFilter } from './exceptions/query-failed-exception.filter';
+import * as path from 'path';
+import { AcceptLanguageResolver, I18nModule } from 'nestjs-i18n';
 
 @Module({
   imports: [
-    KeycloakConnectModule.register(`keycloak.json`, {
-      policyEnforcement: PolicyEnforcementMode.ENFORCING,
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: path.join(__dirname, '../i18n/'),
+        watch: true,
+      },
+      resolvers: [AcceptLanguageResolver],
     }),
   ],
   providers: [
@@ -20,15 +28,9 @@ import { APP_GUARD } from '@nestjs/core';
       provide: APP_FILTER,
       useClass: BadRequestExceptionFilter,
     },
-    // Global authentication guard
     {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    // Used by `@Roles` decorator with the optional `@AllowAnyRole` decorator for allowing any specified role passed.
-    {
-      provide: APP_GUARD,
-      useClass: RoleGuard,
+      provide: APP_FILTER,
+      useClass: QueryFailedExceptionFilter,
     },
   ],
   controllers: [],
