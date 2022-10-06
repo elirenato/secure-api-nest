@@ -8,9 +8,11 @@ import {
 } from 'typeorm';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { StateProvince } from '../state-provinces/state-province.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('customers')
 export class Customer {
+  @Exclude({ toClassOnly: true })
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -39,7 +41,7 @@ export class Customer {
   postalCode: string;
 
   @IsNotEmpty()
-  @ManyToOne(() => StateProvince, null, { nullable: false })
+  @ManyToOne(() => StateProvince, null, { eager: true, nullable: false })
   @JoinColumn({ name: 'state_province_id' })
   stateProvince: StateProvince;
 }

@@ -36,7 +36,9 @@ import { EntityNotFoundErrorFilter } from './exceptions/entity-not-found-excepti
     },
     {
       provide: APP_PIPE,
-      useClass: ValidationPipe,
+      useValue: new ValidationPipe({
+        transform: true,
+      }),
     },
     {
       provide: APP_INTERCEPTOR,

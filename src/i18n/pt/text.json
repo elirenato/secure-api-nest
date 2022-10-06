@@ -1,6 +1,7 @@
 {
   "address should not be empty": "Endereço não deve estar vazio",
   "Could not find any entity of type \"Customer\" matching": "Não foi possível localizar nenhum \"Cliente\" com o id {id}",
+  "id must be a number string": "Id deve ser um número válido",
   "email must be an email": "Email deve ser um endereço válido",
   "firstName should not be empty": "Nome não deve estar vazio",
   "lastName should not be empty": "Sobrenome não deve estar vazio",

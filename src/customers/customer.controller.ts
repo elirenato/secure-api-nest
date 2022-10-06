@@ -8,6 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { Roles } from 'nest-keycloak-connect';
+import { GetByIdParam } from '../commons/get-by-id.param';
 import { Customer } from './customer.entity';
 import { CustomerService } from './customer.service';
 
@@ -36,12 +37,12 @@ export class CustomerController {
   @Delete(':id')
   @Roles({ roles: ['realm:managers'] })
   deleteCustomerById(@Param() params): Promise<void> {
-    return this.customerService.deleteCustomerById(params.id);
+    return this.customerService.deleteCustomerById(Number(params.id));
   }
 
   @Get(':id')
-  getCustomerById(@Param() params): Promise<Customer> {
-    return this.customerService.getCustomerById(params.id);
+  getCustomerById(@Param() params: GetByIdParam): Promise<Customer> {
+    return this.customerService.getCustomerById(Number(params.id));
   }
 
   @Get()

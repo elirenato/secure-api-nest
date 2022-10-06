@@ -9,7 +9,7 @@ import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
-    KeycloakConnectModule.register(`keycloak.json`, {
+    KeycloakConnectModule.register(`.keycloak.json`, {
       policyEnforcement: PolicyEnforcementMode.ENFORCING,
     }),
   ],

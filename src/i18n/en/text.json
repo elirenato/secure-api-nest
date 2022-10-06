@@ -1,6 +1,7 @@
 {
   "address should not be empty": "Address should not be empty",
   "Could not find any entity of type \"Customer\" matching": "Could not find any \"Customer\" matching id {id}",
+  "id must be a number string": "Id must be a valid number",
   "email must be an email": "Email must be an email",
   "firstName should not be empty": "First name should not be empty",
   "lastName should not be empty": "Last name should not be empty",

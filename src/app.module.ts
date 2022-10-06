@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonsModule } from './commons/commons.module';
 import { SecurityModule } from './commons/security.module';
-import { CustomerModule } from './customers/customer.module';
+import { Country } from './countries/country.entity';
 import { CountryModule } from './countries/country.module';
+import { Customer } from './customers/customer.entity';
+import { CustomerModule } from './customers/customer.module';
+import { StateProvince } from './state-provinces/state-province.entity';
 import { StateProvinceModule } from './state-provinces/state-province.module';
 
 @Module({
@@ -12,16 +15,20 @@ import { StateProvinceModule } from './state-provinces/state-province.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: Number(process.env.DATABASE_PORT),
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      entities: [],
-      synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE),
-      autoLoadEntities: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('DATABASE_HOST'),
+        port: configService.get('DATABASE_PORT'),
+        username: configService.get('DATABASE_USERNAME'),
+        password: configService.get('DATABASE_PASSWORD'),
+        database: configService.get('DATABASE_NAME'),
+        synchronize: configService.get('DATABASE_SYNCHRONIZE'),
+        entities: [Country, StateProvince, Customer],
+        autoLoadEntities: false,
+      }),
     }),
     SecurityModule,
     CountryModule,
@@ -29,7 +36,5 @@ import { StateProvinceModule } from './state-provinces/state-province.module';
     CustomerModule,
     CommonsModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

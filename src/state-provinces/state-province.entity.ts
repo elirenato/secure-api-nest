@@ -1,3 +1,4 @@
+import { SerializeOptions } from '@nestjs/common';
 import {
   Column,
   Entity,
@@ -18,7 +19,7 @@ export class StateProvince {
   @Column({ length: 255 })
   name: string;
 
-  @ManyToOne(() => Country, null, { nullable: false })
+  @ManyToOne(() => Country, null, { eager: true, nullable: false })
   @JoinColumn({ name: 'country_id' })
   country: Country;
 }

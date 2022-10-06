@@ -7,12 +7,18 @@ import {
 import { Reflector } from '@nestjs/core';
 import { TestingModule } from '@nestjs/testing';
 import * as jwt from 'jsonwebtoken';
-import { BadRequestExceptionFilter } from '../../src/commons/exceptions/bad-request-exception.filter';
 import { FakeAuthGuard } from './fake-auth.guard';
-import { QueryFailedErrorFilter } from '../../src/commons/exceptions/query-failed-error.filter';
+
+export interface FakeRepository<T, Y> {
+  insert(value: T);
+  update(value: T);
+  delete(number: Y);
+  findOneByOrFail(number: Y): Promise<T>;
+  find(): Promise<T[]>;
+}
 
 export abstract class TestHelper {
-  static createToken(roles: string[]): string {
+  static createToken(roles: string[] = []): string {
     const now = new Date();
     now.setFullYear(now.getFullYear() + 1);
     const payload = {
@@ -35,20 +41,18 @@ export abstract class TestHelper {
   ): Promise<INestApplication> {
     const app = fixture.createNestApplication();
     const reflector = app.get(Reflector);
-    // app.useLogger(console);
     app.useGlobalGuards(new FakeAuthGuard(reflector));
-    app.useGlobalPipes(new ValidationPipe());
-    app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
+    app.useLogger(console);
     return await app.init();
   }
 
-  static createMockRepository(): any {
+  static createMockRepository<T, Y>(): FakeRepository<T, Y> {
     return {
-      insert: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      findOneBy: jest.fn(),
-      find: jest.fn(),
+      insert: jest.fn<T, any>(),
+      update: jest.fn<T, any>(),
+      delete: jest.fn<number, any>(),
+      findOneByOrFail: jest.fn<Promise<T>, any>(),
+      find: jest.fn<Promise<T[]>, any>(),
     };
   }
 }

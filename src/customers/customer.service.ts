@@ -11,7 +11,6 @@ export class CustomerService {
   ) {}
 
   async persistCustomer(customerInput: Customer): Promise<void> {
-    customerInput.id = null;
     await this.customerRepository.insert(customerInput);
   }
 
@@ -39,6 +38,6 @@ export class CustomerService {
   }
 
   getCustomerById(id: number): Promise<Customer> {
-    return this.customerRepository.findOneBy({ id });
+    return this.customerRepository.findOneByOrFail({ id });
   }
 }

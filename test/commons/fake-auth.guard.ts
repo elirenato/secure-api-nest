@@ -18,11 +18,12 @@ export class FakeAuthGuard implements CanActivate {
     if (jwtToken.length < 2) {
       throw new UnauthorizedException();
     }
+    console.log(this.reflector);
     const rolesAnnotation: any = this.reflector.get<string[]>(
       'roles',
       _context.getHandler(),
     );
-    if (rolesAnnotation.roles) {
+    if (rolesAnnotation && rolesAnnotation.roles) {
       jwtToken = jwt.decode(jwtToken[1]);
       let hasRole = false;
       if (jwtToken && jwtToken.realm_access && jwtToken.realm_access.roles) {
