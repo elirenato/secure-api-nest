@@ -2,12 +2,12 @@ import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EntityFactory } from '../commons/entity-factory';
 import { TestHelper } from '../commons/test-helper';
-import { Customer } from '../../src/customers/customer.entity';
+import { Customer } from '../../src/entities/customer.entity';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { CommonsModule } from '../../src/commons/commons.module';
-import { CustomerController } from '../../src/customers/customer.controller';
-import { CustomerService } from '../../src/customers/customer.service';
+import { CustomerController } from '../../src/controllers/customer.controller';
+import { CustomerService } from '../../src/services/customer.service';
 import { QueryFailedError } from 'typeorm';
 import { faker } from '@faker-js/faker';
 

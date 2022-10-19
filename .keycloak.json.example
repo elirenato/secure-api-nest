@@ -1,9 +1,0 @@
-{
-  "authServerUrl": "http://localhost:8080/auth",
-  "realm": "app",
-  "clientId": "secure-api",
-  "secret": "rQGYWLVWPNd8brFCqUfodNHv1SUfZ6We",
-  "public": false,
-  "tokenValidation": "online",
-  "realmPublicKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6ltP7lEEw3deIrGUb1PxjvL+2pg1uqMJG97PFnqYKh0ENg32IPEeRiPgi7joRo0Sg4ZcC2UmjdasVs/lUtAIR+hvd6Qqwcp58KBJVH1Z4JrtZ6Tyu21Nbg7TyVkwQYolRTLKnZz4KGpDwEdVo6Ad56FGp89I7jGf3399micVdky/TJIdacktEFQurLwtiBr+Dsre6BUXGUzhYqA/BUFn4LAI1tqlTh8mE3Kkh13PiJ+p2l8Z+7L/0At0zWnlR0jExbFR10QbFH7PMxsS5DFmK1Ow/vT9t6Oy8TPS3uftHmjUwCzuWRa7cqK/kZ/x0uVBbkFROH5rm9PRfX5CN3vUcwIDAQAB"
-}

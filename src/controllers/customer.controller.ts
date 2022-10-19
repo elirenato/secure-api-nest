@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common';
 import { Roles } from 'nest-keycloak-connect';
 import { GetByIdParam } from '../commons/get-by-id.param';
-import { Customer } from './customer.entity';
-import { CustomerService } from './customer.service';
+import { Customer } from '../entities/customer.entity';
+import { CustomerService } from '../services/customer.service';
 
 @Controller('api/customers')
 export class CustomerController {

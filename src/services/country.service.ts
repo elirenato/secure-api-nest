@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Country } from './country.entity';
+import { Country } from '../entities/country.entity';
 
 @Injectable()
 export class CountryService {
@@ -19,7 +19,6 @@ export class CountryService {
   }
 
   getCountryById(id: number): Promise<Country> {
-    console.log(this.countryRepository);
     return this.countryRepository.findOneByOrFail({ id });
   }
 }

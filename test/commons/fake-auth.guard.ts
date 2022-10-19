@@ -18,7 +18,6 @@ export class FakeAuthGuard implements CanActivate {
     if (jwtToken.length < 2) {
       throw new UnauthorizedException();
     }
-    console.log(this.reflector);
     const rolesAnnotation: any = this.reflector.get<string[]>(
       'roles',
       _context.getHandler(),

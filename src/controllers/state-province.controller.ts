@@ -1,8 +1,8 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { IsNumberString } from 'class-validator';
 import { GetByIdParam } from '../commons/get-by-id.param';
-import { StateProvince } from './state-province.entity';
-import { StateProvinceService } from './state-province.service';
+import { StateProvince } from '../entities/state-province.entity';
+import { StateProvinceService } from '../services/state-province.service';
 
 class StateProvincesQuery {
   @IsNumberString()

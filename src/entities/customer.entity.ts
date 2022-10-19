@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IsEmail, IsNotEmpty } from 'class-validator';
-import { StateProvince } from '../state-provinces/state-province.entity';
+import { StateProvince } from './state-province.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity('customers')

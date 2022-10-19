@@ -2,13 +2,13 @@ import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EntityFactory } from '../commons/entity-factory';
 import { TestHelper } from '../commons/test-helper';
-import { Country } from '../../src/countries/country.entity';
+import { Country } from '../../src/entities/country.entity';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { faker } from '@faker-js/faker';
 import { CommonsModule } from '../../src/commons/commons.module';
-import { CountryController } from '../../src/countries/country.controller';
-import { CountryService } from '../../src/countries/country.service';
+import { CountryController } from '../../src/controllers/country.controller';
+import { CountryService } from '../../src/services/country.service';
 
 // Integration Tests for Country Controller
 describe('CountryController', () => {

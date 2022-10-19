@@ -2,13 +2,13 @@ import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EntityFactory } from '../commons/entity-factory';
 import { TestHelper } from '../commons/test-helper';
-import { StateProvince } from '../../src/state-provinces/state-province.entity';
+import { StateProvince } from '../../src/entities/state-province.entity';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { faker } from '@faker-js/faker';
 import { CommonsModule } from '../../src/commons/commons.module';
-import { StateProvinceController } from '../../src/state-provinces/state-province.controller';
-import { StateProvinceService } from '../../src/state-provinces/state-province.service';
+import { StateProvinceController } from '../../src/controllers/state-province.controller';
+import { StateProvinceService } from '../../src/services/state-province.service';
 
 // Integration Tests for State Province Controller
 describe('StateProvinceController', () => {

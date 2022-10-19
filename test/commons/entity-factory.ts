@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
-import { Customer } from '../../src/customers/customer.entity';
-import { Country } from '../../src/countries/country.entity';
-import { StateProvince } from '../../src/state-provinces/state-province.entity';
+import { Customer } from '../../src/entities/customer.entity';
+import { Country } from '../../src/entities/country.entity';
+import { StateProvince } from '../../src/entities/state-province.entity';
 
 export abstract class EntityFactory {
   static createCountry(): Country {

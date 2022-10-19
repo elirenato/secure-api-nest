@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { GetByIdParam } from '../commons/get-by-id.param';
-import { Country } from './country.entity';
-import { CountryService } from './country.service';
+import { Country } from '../entities/country.entity';
+import { CountryService } from '../services/country.service';
 
 @Controller('api/countries')
 export class CountryController {

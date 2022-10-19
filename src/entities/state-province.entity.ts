@@ -1,4 +1,3 @@
-import { SerializeOptions } from '@nestjs/common';
 import {
   Column,
   Entity,
@@ -6,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Country } from '../countries/country.entity';
+import { Country } from '../entities/country.entity';
 
 @Entity('state_provinces')
 export class StateProvince {
