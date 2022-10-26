@@ -56,7 +56,7 @@ docker-compose -f docker/docker-compose.yaml --env-file=docker/.env down
 
 1. To complete the setup of Keycloak, you also need to configure a Realm to test the application.
 
-[Configure a new realm](https://elibarbosa.dev/using-keycloak-to-secure-applications/#configure-realm).
+[Configure a new realm](./docs/create-new-realm-keycloak-18.pdf).
 
 2. Open the `.env` and replace the following properties:
 
